@@ -24,7 +24,7 @@ public abstract class MenuPanel extends JPanel {
         this.cardLayout = cardLayout;
         this.parentPanel = parentPanel;
         try {
-            backGroundImage = ImageIO.read(getClass().getResource("/main_menu_background.jpg"));
+            backGroundImage = ImageIO.read(getClass().getResource("/backgrounds/main_menu_background.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,80 +1,129 @@
 package com.bilkent.feedingbobby.controller;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import com.bilkent.feedingbobby.model.Direction;
+import com.bilkent.feedingbobby.model.EnemyFish;
+import com.bilkent.feedingbobby.model.GameMapManager;
 import com.bilkent.feedingbobby.model.GameObject;
 import com.bilkent.feedingbobby.model.PlayerFish;
 import com.bilkent.feedingbobby.view.GamePanel;
 
 public class GameManager {
-    // FOR CAPPING GAME AT 60 FPS
-    private static final long REFRESH_INTERVAL_MS = 17;
+	// FOR CAPPING GAME AT 60 FPS
+	private static final long REFRESH_INTERVAL_MS = 17;
 
-    private boolean isGameRunning;
+	private boolean isGameRunning = false;
 
-    private GamePanel gamePanel;
+	private GamePanel gamePanel;
+	private GameMapManager gameMapManager;
 
-    private List<GameObject> gameObjects;
-    private PlayerFish playerFish;
+	private List<GameObject> gameObjects = new ArrayList<>();
+	private PlayerFish playerFish;
 
-    public GameManager(GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
-        isGameRunning = false;
-        gameObjects = new ArrayList<>();
+	public GameManager(GamePanel gamePanel) {
+		this.gamePanel = gamePanel;
+		gameMapManager = new GameMapManager();
 
-        if (playerFish == null) {
-            playerFish = new PlayerFish();
-        }
-        gameObjects.add(playerFish);
-    }
+		if (playerFish == null) {
+			playerFish = new PlayerFish();
+		}
+		gameObjects.add(playerFish);
 
-    public void startGame() {
-        isGameRunning = true;
-        Thread thread = new Thread(new GameLoop());
-        thread.start();
-    }
+		this.gamePanel.setLevel(gameMapManager.getLevel());
+	}
 
-    public void stopGame() {
-        isGameRunning = false;
-    }
+	public void initialize() {
 
-    private class GameLoop implements Runnable {
+		int spaceBetweenFish = GamePanel.RESOLUTION.height / gameMapManager.getNumberOfFish();
 
-        @Override
-        public void run() {
+		for (int i = 0; i < gameMapManager.getNumberOfFish(); i++) {
+			boolean onLeft = i % 2 == 0;
+			EnemyFish enemyFish = new EnemyFish(0);
+			if (onLeft) {
+				enemyFish.setPositon(5, i * spaceBetweenFish + 10);
+				enemyFish.setDirection(Direction.RIGHT);
+			} else {
+				enemyFish.setPositon(GamePanel.RESOLUTION.width - enemyFish.getWidth() - 5, i * spaceBetweenFish + 10);
+				enemyFish.setDirection(Direction.LEFT);
+			}
+			gameObjects.add(enemyFish);
+		}
+		isGameRunning = true;
+	}
 
-            while (isGameRunning) {
-                long oneTickOfGame = System.currentTimeMillis();
-                // Handle input
-                handleInput();
-                // Handle logic
-                handleLogic();
-                // Handle drawing
-                handleDrawing();
+	public void startGame() {
+		initialize();
+		Thread thread = new Thread(new GameLoop());
+		thread.start();
+	}
 
-                try {
-                    Thread.sleep(REFRESH_INTERVAL_MS - (System.currentTimeMillis() - oneTickOfGame));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+	public void stopGame() {
+		isGameRunning = false;
+	}
 
-        }
-    }
+	private class GameLoop implements Runnable {
 
-    private void handleInput() {
-        gameObjects.stream().filter(gameObject -> gameObject.isControlledByMouse()).forEach(gameObject -> {
-            gameObject.setDirection(InputManager.getInstance().getChangeDirection());
-            gameObject.setPosition(InputManager.getInstance().getMousePoint());
-        });
-    }
+		@Override
+		public void run() {
+			
+			long startTime = System.currentTimeMillis();
 
-    private void handleLogic() {
-    }
+			while (isGameRunning) {
+				long oneTickOfGame = System.currentTimeMillis();
+				// Handle input
+				handleInput();
+				// Handle logic
+				if(System.currentTimeMillis() - startTime > 3000) {
+					handleLogic();
+				} else {
+					
+				}
+				// Handle drawing
+				handleDrawing();
 
-    private void handleDrawing() {
-        gamePanel.draw(gameObjects);
-    }
+				try {
+					Thread.sleep(REFRESH_INTERVAL_MS - (System.currentTimeMillis() - oneTickOfGame));
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+	}
+
+	private void handleInput() {
+		gameObjects.stream().filter(gameObject -> gameObject.isControlledByMouse()).forEach(gameObject -> {
+			gameObject.setDirection(InputManager.getInstance().getChangeDirection());
+			gameObject.setPosition(InputManager.getInstance().getMousePoint());
+		});
+
+		gameObjects.stream().filter(gameObject -> gameObject.isControlledByAi()).forEach(gameObject -> {
+			gameObject.move();
+		});
+	}
+
+	private void handleLogic() {
+		Iterator<GameObject> iterator = gameObjects.iterator();
+		while (iterator.hasNext()) {
+			GameObject gameObject = iterator.next();
+			if (gameObject.isMarkedForDestroying()) {
+				iterator.remove();
+			}
+		}
+		
+		gameObjects.stream().filter(gameObject -> gameObject.intersects(playerFish.getBoundingBox()))
+		.forEach(gameObject -> {
+			gameObject.setMarkedForDestroying(true);
+			gameObject.updateState(this, gameMapManager, playerFish);
+		});
+
+	}
+
+	private void handleDrawing() {
+		gamePanel.draw(gameObjects);
+	}
 
 }

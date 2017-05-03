@@ -30,7 +30,7 @@ public class MainMenuPanel extends MenuPanel {
     public MainMenuPanel(CardLayout cardLayout, JPanel cardPanel) {
         super(cardLayout, cardPanel);
         try {
-            backGroundImage = ImageIO.read(getClass().getResource("/main_menu_background.jpg"));
+            backGroundImage = ImageIO.read(getClass().getResource("/backgrounds/main_menu_background.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
