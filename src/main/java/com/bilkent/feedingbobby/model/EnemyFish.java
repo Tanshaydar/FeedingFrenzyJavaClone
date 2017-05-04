@@ -7,6 +7,7 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 import com.bilkent.feedingbobby.controller.GameManager;
+import com.bilkent.feedingbobby.controller.GameMapManager;
 import com.bilkent.feedingbobby.view.GamePanel;
 
 public class EnemyFish extends Fish {

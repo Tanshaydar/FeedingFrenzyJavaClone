@@ -1,4 +1,4 @@
-package com.bilkent.feedingbobby.model;
+package com.bilkent.feedingbobby.controller;
 
 public class GameMapManager {
 

@@ -7,6 +7,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 import com.bilkent.feedingbobby.controller.GameManager;
+import com.bilkent.feedingbobby.controller.GameMapManager;
 
 public abstract class GameObject {
 

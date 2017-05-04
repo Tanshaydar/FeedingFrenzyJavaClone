@@ -6,6 +6,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import com.bilkent.feedingbobby.controller.GameManager;
+import com.bilkent.feedingbobby.controller.GameMapManager;
 
 public class PlayerFish extends GameObject{
 

@@ -1,6 +1,7 @@
 package com.bilkent.feedingbobby.model;
 
 import com.bilkent.feedingbobby.controller.GameManager;
+import com.bilkent.feedingbobby.controller.GameMapManager;
 
 public class DrunkFish extends SpecialFish{
 
