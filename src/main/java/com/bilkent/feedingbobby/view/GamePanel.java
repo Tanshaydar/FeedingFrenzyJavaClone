@@ -85,7 +85,7 @@ public class GamePanel extends JPanel implements ComponentListener {
 		graphics2d.drawImage(backgroundImage, 0, 0, RESOLUTION.width, RESOLUTION.height, null);
 
 		for (GameObject gameObject : gameObjects) {
-		    if(gameObject instanceof PlayerFish && )
+		    if(gameObject instanceof PlayerFish && ((PlayerFish)gameObject).isEnabled())
 		    graphics2d.drawImage(gameObject.getImage(), gameObject.getX(),
                             gameObject.getY(), gameObject.getWidth(), gameObject.getHeight(), null);
                 }
