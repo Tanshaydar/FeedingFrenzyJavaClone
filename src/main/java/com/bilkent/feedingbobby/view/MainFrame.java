@@ -5,17 +5,23 @@ import java.awt.CardLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import com.bilkent.feedingbobby.controller.GameManager;
+
 public class MainFrame extends JFrame {
     private JPanel contentPane;
     private JPanel cardPanel;
     private CardLayout cardLayout;
 
     private MainMenuPanel mainMenuPanel;
+    private PauseMenuPanel pauseMenuPanel;
     private HighScorePanel highScorePanel;
     private HelpPanel helpPanel;
     private ChangeSettingsPanel changeSettingsPanel;
     private AboutPanel aboutPanel;
     private CreditsPanel creditsPanel;
+
+    private GamePanel gamePanel;
+    private GameManager gameManager;
 
     public MainFrame() {
 
@@ -31,8 +37,15 @@ public class MainFrame extends JFrame {
         cardLayout = (CardLayout) cardPanel.getLayout();
         contentPane.add(cardPanel);
 
-        mainMenuPanel = new MainMenuPanel(cardLayout, cardPanel);
+        gamePanel = new GamePanel(cardPanel, cardLayout);
+        gamePanel.setFocusable(true);
+        cardPanel.add(gamePanel, GamePanel.class.getName());
+        gameManager = new GameManager(gamePanel);
+
+        mainMenuPanel = new MainMenuPanel(cardLayout, cardPanel, gameManager, gamePanel);
         cardPanel.add(mainMenuPanel, MainMenuPanel.class.getName());
+        pauseMenuPanel = new PauseMenuPanel(cardLayout, cardPanel, gameManager, gamePanel);
+        cardPanel.add(pauseMenuPanel, PauseMenuPanel.class.getName());
         highScorePanel = new HighScorePanel(cardLayout, cardPanel);
         cardPanel.add(highScorePanel, HighScorePanel.class.getName());
         helpPanel = new HelpPanel(cardLayout, cardPanel);
@@ -43,7 +56,7 @@ public class MainFrame extends JFrame {
         cardPanel.add(aboutPanel, AboutPanel.class.getName());
         creditsPanel = new CreditsPanel(cardLayout, cardPanel);
         cardPanel.add(creditsPanel, CreditsPanel.class.getName());
-        
+
         cardLayout.show(cardPanel, MainMenuPanel.class.getName());
     }
 

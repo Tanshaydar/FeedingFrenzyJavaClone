@@ -23,12 +23,13 @@ public class MainMenuPanel extends MenuPanel {
     private JButton aboutButton;
     private JButton creditsButton;
     private JButton exitButton;
-
-    private GamePanel gamePanel;
     private GameManager gameManager;
+    private GamePanel gamePanel;
 
-    public MainMenuPanel(CardLayout cardLayout, JPanel cardPanel) {
+    public MainMenuPanel(CardLayout cardLayout, JPanel cardPanel, GameManager gameManager, GamePanel gamePanel) {
         super(cardLayout, cardPanel);
+        this.gameManager = gameManager;
+        this.gamePanel = gamePanel;
         try {
             backGroundImage = ImageIO.read(getClass().getResource("/backgrounds/main_menu_background.jpg"));
         } catch (IOException e) {
@@ -99,9 +100,6 @@ public class MainMenuPanel extends MenuPanel {
         gbc_exitButton.gridy = 7;
         add(exitButton, gbc_exitButton);
 
-        gamePanel = new GamePanel(cardPanel, cardLayout);
-        gameManager = new GameManager(gamePanel);
-        cardPanel.add(gamePanel, GamePanel.class.getName());
         setActionListeners();
     }
 
