@@ -50,7 +50,7 @@ public class EnemyFish extends Fish {
         }
 
         if (x > GamePanel.RESOLUTION.width) {
-            x = 0;
+            x = -width;
         }
         if (x + width < 0) {
             x = GamePanel.RESOLUTION.width;

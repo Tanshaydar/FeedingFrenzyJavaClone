@@ -44,6 +44,15 @@ public class PlayerFish extends GameObject {
         });
     }
 
+    public void reset() {
+        score = 0;
+        size = 1;
+        frenzy = 0;
+        growth = 0;
+        lives = 3;
+        isDamaged = false;
+    }
+
     @Override
     public void setPosition( Point point) {
         this.x = point.x - width / 2;
@@ -98,7 +107,7 @@ public class PlayerFish extends GameObject {
         return lives;
     }
 
-    public void setLives( int lives) {
+    public synchronized void setLives( int lives) {
         this.lives = lives;
     }
 

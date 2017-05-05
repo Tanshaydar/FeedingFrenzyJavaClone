@@ -3,10 +3,8 @@ package com.bilkent.feedingbobby.controller;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
-import com.bilkent.feedingbobby.model.Direction;
-import com.bilkent.feedingbobby.model.EnemyFish;
 import com.bilkent.feedingbobby.model.GameObject;
 import com.bilkent.feedingbobby.model.PlayerFish;
 import com.bilkent.feedingbobby.view.GamePanel;
@@ -14,10 +12,12 @@ import com.bilkent.feedingbobby.view.GamePanel;
 public class GameManager {
     // FOR CAPPING GAME AT 60 FPS
     private static final long REFRESH_INTERVAL_MS = 17;
+    private long startTime;
 
     private boolean isGameRunning = false;
     private boolean isGamePaused = false;
     private boolean isGameOver = false;
+    private boolean readyForSpecialFish = false;
 
     private GamePanel gamePanel;
     private GameMapManager gameMapManager;
@@ -41,6 +41,8 @@ public class GameManager {
 
         if (playerFish == null) {
             playerFish = new PlayerFish();
+        } else {
+            playerFish.reset();
         }
 
         this.gamePanel.setLevel(playerFish, gameObjects, gameMapManager.getLevel());
@@ -48,12 +50,16 @@ public class GameManager {
 
     public void startGame() {
         initialize();
+        if (gameThread != null && gameThread.isAlive()) {
+            gameThread.interrupt();
+        }
         gameThread = new Thread(new GameLoop());
         gameThread.start();
         playerFish.setCurrentlyActive(false);
     }
 
     public void stopGame() {
+        isGamePaused = false;
         isGameRunning = false;
     }
 
@@ -70,7 +76,7 @@ public class GameManager {
         @Override
         public void run() {
 
-            long startTime = System.currentTimeMillis();
+            startTime = System.currentTimeMillis();
 
             while (isGameRunning) {
 
@@ -106,12 +112,13 @@ public class GameManager {
                     System.out.println("FPS is decreasing!");
                 }
             }
-
-            gamePanel.showGameOverScreen();
+            if (playerFish.getLives() == 0) {
+                gamePanel.showGameOverScreen();
+            }
         }
     }
 
-    private boolean checkGameState() {
+    private synchronized boolean checkGameState() {
         if (playerFish.getLives() == 0) {
             isGamePaused = false;
             isGameRunning = false;
@@ -121,7 +128,7 @@ public class GameManager {
         return false;
     }
 
-    private void handleInput() {
+    private synchronized void handleInput() {
         playerFish.setDirection(InputManager.getInstance().getChangeDirection());
         playerFish.setPosition(InputManager.getInstance().getMousePoint());
 
@@ -139,7 +146,7 @@ public class GameManager {
         }
     }
 
-    private void handleLogic() {
+    private synchronized void handleLogic() {
         boolean shouldAddNewEnemyFish = false;
 
         // Remove game objects if they should be removed
@@ -161,42 +168,29 @@ public class GameManager {
 
         // Should add new enemies?
         if (shouldAddNewEnemyFish) {
-            Random random = new Random();
-
-            boolean hasAnyEatable = false;
-            for (GameObject gameObject : gameObjects) {
-                if (gameObject instanceof EnemyFish && ((EnemyFish) gameObject).getSize() <= playerFish.getSize()) {
-                    hasAnyEatable = true;
-                }
-            }
-
-            EnemyFish enemyFish;
-            if (hasAnyEatable) {
-                enemyFish = new EnemyFish(random.nextInt(playerFish.getSize() + 1));
-            } else {
-                enemyFish = new EnemyFish(random.nextInt(playerFish.getSize()));
-            }
-
-            if (random.nextBoolean()) {
-                enemyFish.setPositon(5, random.nextInt(GamePanel.RESOLUTION.height) + 10);
-                enemyFish.setDirection(Direction.RIGHT);
-            } else {
-                enemyFish.setPositon(GamePanel.RESOLUTION.width - enemyFish.getWidth() - 5,
-                        random.nextInt(GamePanel.RESOLUTION.height) + 10);
-                enemyFish.setDirection(Direction.LEFT);
-            }
-            gameObjects.add(enemyFish);
+            gameObjects.add(gameMapManager.getNewEnemyFish(gameObjects, playerFish.getSize()));
         }
 
         // Should add special enemies?
-
+        if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime) % 10 == 0 && !readyForSpecialFish) {
+            GameObject specialFish = gameMapManager.getSpecialFish();
+            if (specialFish != null) {
+                gameObjects.add(specialFish);
+                readyForSpecialFish = true;
+            }
+            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime) % 10 != 0)
+                readyForSpecialFish = false;
+        }
     }
 
-    private void handleDrawing() {
+    private synchronized void handleDrawing() {
+        long currentTime = System.currentTimeMillis() - startTime;
+        gamePanel.setMinutes(TimeUnit.MILLISECONDS.toMinutes(currentTime));
+        gamePanel.setSeconds(TimeUnit.MILLISECONDS.toSeconds(currentTime));
         gamePanel.repaint();
     }
 
-    public void addNewObject( GameObject gameObject) {
+    public synchronized void addNewObject( GameObject gameObject) {
         gameObjects.add(gameObject);
     }
 

@@ -61,4 +61,33 @@ public class GameMapManager {
         }
         return initialGameObjects;
     }
+
+    public GameObject getNewEnemyFish( List<GameObject> gameObjects, int size) {
+        Random random = new Random();
+
+        boolean hasAnyEatable = false;
+        for (GameObject gameObject : gameObjects) {
+            if (gameObject instanceof EnemyFish && ((EnemyFish) gameObject).getSize() < size) {
+                hasAnyEatable = true;
+            }
+        }
+
+        EnemyFish enemyFish;
+        if (hasAnyEatable) {
+            enemyFish = new EnemyFish(random.nextInt(size + 1));
+        } else {
+            enemyFish = new EnemyFish(random.nextInt(size));
+        }
+
+        if (random.nextBoolean()) {
+            enemyFish.setPositon(5, random.nextInt(GamePanel.RESOLUTION.height) + 10);
+            enemyFish.setDirection(Direction.RIGHT);
+        } else {
+            enemyFish.setPositon(GamePanel.RESOLUTION.width - enemyFish.getWidth() - 5,
+                    random.nextInt(GamePanel.RESOLUTION.height) + 10);
+            enemyFish.setDirection(Direction.LEFT);
+        }
+        
+        return enemyFish;
+    }
 }

@@ -41,6 +41,9 @@ public class GamePanel extends JPanel implements ComponentListener {
     private CardLayout cardLayout;
     private JPanel cardPanel;
 
+    private int seconds;
+    private int minutes;
+
     public GamePanel(JPanel cardPanel, CardLayout cardLayout) {
         this.cardPanel = cardPanel;
         this.cardLayout = cardLayout;
@@ -146,8 +149,10 @@ public class GamePanel extends JPanel implements ComponentListener {
                 50 - fontMetrics.getHeight() / 2);
 
         // Draw Time
-        // graphics2d.setColor(Color.BLACK);
-        // graphics2d.setFont(graphics2d.getFont().deriveFont(Font.BOLD, 10));
+        graphics2d.setColor(Color.BLACK);
+        graphics2d.setFont(graphics2d.getFont().deriveFont(Font.BOLD, 10));
+        String timeText = String.format("%02d : %02d", minutes, seconds);
+        graphics2d.drawString(timeText, (RESOLUTION.width - fontMetrics.stringWidth(timeText)) / 2, 50);
 
         graphics2d.setColor(Color.WHITE);
 
@@ -261,6 +266,14 @@ public class GamePanel extends JPanel implements ComponentListener {
         graphics2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
         graphics2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
                 RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+    }
+
+    public void setMinutes( long minutes) {
+        this.minutes = (int) minutes;
+    }
+
+    public void setSeconds( long seconds) {
+        this.seconds = (int) seconds;
     }
 
 }

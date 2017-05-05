@@ -23,7 +23,7 @@ public class JellyFish extends SpecialFish {
         }
 
         Random random = new Random();
-        x = random.nextInt(GamePanel.RESOLUTION.width - width * 2) + 15;
+        x = random.nextInt((GamePanel.RESOLUTION.width - width * 2)) + width/2;
         y = GamePanel.RESOLUTION.height + 1;
         lookingDirection = Direction.UP;
     }
@@ -49,7 +49,7 @@ public class JellyFish extends SpecialFish {
         if (x < 5) {
             x = 5;
         }
-        if (x + width < GamePanel.RESOLUTION.width - 5) {
+        if (x + width > GamePanel.RESOLUTION.width - 5) {
             x = GamePanel.RESOLUTION.width - width - 5;
         }
     }
