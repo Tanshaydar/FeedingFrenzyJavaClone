@@ -26,17 +26,19 @@ public class PauseMenuPanel extends MenuPanel implements ComponentListener {
     private JLabel gamePausedLabel;
     private JButton resumeButton;
     private JButton exitGameButton;
-
-    private GameManager gameManager;
-    private GamePanel gamePanel;
     private JTextField highsScoreNameTextField;
     private JLabel highScoreNameLabel;
     private JButton saveHighScoreButton;
+
+    private GameManager gameManager;
+    private GamePanel gamePanel;
+    private SimpleDateFormat simpleDateFormat;
 
     public PauseMenuPanel(CardLayout cardLayout, JPanel cardPanel, GameManager gameManager, GamePanel gamePanel) {
         super(cardLayout, cardPanel);
         this.gameManager = gameManager;
         this.gamePanel = gamePanel;
+        simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 0, 150, 0, 0 };
@@ -126,7 +128,6 @@ public class PauseMenuPanel extends MenuPanel implements ComponentListener {
             parentPanel.revalidate();
         });
         saveHighScoreButton.addActionListener(ae -> {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm: - dd/MM/yyyy");
             HighScore highScore = new HighScore(highsScoreNameTextField.getText(), gameManager.getScore(),
                     simpleDateFormat.format(new Date(System.currentTimeMillis())));
             HighScoreManager.getInstance().writeScoreToFile(highScore);
