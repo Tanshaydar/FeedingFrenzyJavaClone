@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.bilkent.feedingbobby.model.Bubble;
 import com.bilkent.feedingbobby.model.GameObject;
 import com.bilkent.feedingbobby.model.PlayerFish;
 import com.bilkent.feedingbobby.view.GamePanel;
@@ -18,6 +19,7 @@ public class GameManager {
     private boolean isGamePaused = false;
     private boolean isGameOver = false;
     private boolean readyForSpecialFish = false;
+    private boolean shouldAddBubble = false;
 
     private GamePanel gamePanel;
     private GameMapManager gameMapManager;
@@ -158,6 +160,9 @@ public class GameManager {
                 shouldAddNewEnemyFish = true;
             }
         }
+//        List<GameObject> objectsToDelete = gameObjects.stream().filter(gameObject -> gameObject.isMarkedForDestroying())
+//                .collect(Collectors.toList());
+//        gameObjects.removeAll(objectsToDelete);
 
         // Update game object states
         for (GameObject gameObject : gameObjects) {
@@ -178,8 +183,18 @@ public class GameManager {
                 gameObjects.add(specialFish);
                 readyForSpecialFish = true;
             }
-            if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime) % 10 != 0)
-                readyForSpecialFish = false;
+        } else if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime) % 10 != 0) {
+            readyForSpecialFish = false;
+        }
+
+        // Should add bubbles?
+        if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime) % 5 == 0
+                && gameObjects.stream().filter(gameObject -> gameObject instanceof Bubble).count() < 20
+                && !shouldAddBubble) {
+            gameObjects.addAll(gameMapManager.addBubbles());
+            shouldAddBubble = true;
+        } else if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime) % 5 != 0) {
+            shouldAddBubble = false;
         }
     }
 
@@ -192,6 +207,10 @@ public class GameManager {
 
     public synchronized void addNewObject( GameObject gameObject) {
         gameObjects.add(gameObject);
+    }
+
+    public int getScore() {
+        return playerFish.getScore();
     }
 
     public boolean isGameOver() {

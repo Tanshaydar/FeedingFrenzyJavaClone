@@ -1,20 +1,27 @@
 package com.bilkent.feedingbobby.view;
 
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import java.awt.Font;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.TableRowSorter;
 
-public class HighScorePanel extends MenuPanel {
+import com.bilkent.feedingbobby.controller.HighScoreManager;
+import com.bilkent.feedingbobby.model.HighScoreTableModel;
+
+public class HighScorePanel extends MenuPanel implements ComponentListener {
 
     private JButton backButton;
-    private JTextArea textArea;
+    private JScrollPane scrollPane;
+    private JTable table;
+    private HighScoreTableModel highScoreTableModel;
 
     public HighScorePanel(CardLayout cardLayout, JPanel cardPanel) {
         super(cardLayout, cardPanel);
@@ -25,19 +32,22 @@ public class HighScorePanel extends MenuPanel {
         gridBagLayout.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
         gridBagLayout.rowWeights = new double[] { 1.0, 0.0, Double.MIN_VALUE };
         setLayout(gridBagLayout);
-        
-        textArea = new JTextArea("NOT YET READY!");
-        textArea.setFont(new Font("Tahoma", Font.BOLD, 12));
-        textArea.setWrapStyleWord(true);
-        textArea.setLineWrap(true);
-        textArea.setBackground(new Color(255, 255, 255, 150));
+
+        highScoreTableModel = new HighScoreTableModel();
+        scrollPane = new JScrollPane();
+        table = new JTable(highScoreTableModel);
+        table.setFillsViewportHeight(true);
+        table.getTableHeader().setReorderingAllowed(false);
+        TableRowSorter<HighScoreTableModel> rowSorter = new TableRowSorter<HighScoreTableModel>(highScoreTableModel);
+        table.setRowSorter(rowSorter);
+        scrollPane.setViewportView(table);
         GridBagConstraints gbc_textArea = new GridBagConstraints();
         gbc_textArea.gridwidth = 2;
         gbc_textArea.insets = new Insets(15, 15, 15, 15);
         gbc_textArea.fill = GridBagConstraints.BOTH;
         gbc_textArea.gridx = 0;
         gbc_textArea.gridy = 0;
-        add(textArea, gbc_textArea);
+        add(scrollPane, gbc_textArea);
 
         backButton = new JButton("Back");
         GridBagConstraints gbc_backButton = new GridBagConstraints();
@@ -47,13 +57,33 @@ public class HighScorePanel extends MenuPanel {
         gbc_backButton.gridy = 1;
         add(backButton, gbc_backButton);
 
-        addActionListenres();
+        addActionListeners();
+        addComponentListener(this);
+        fillTable();
     }
 
-    private void addActionListenres() {
+    private void addActionListeners() {
         backButton.addActionListener(ae -> {
             cardLayout.show(parentPanel, MainMenuPanel.class.getName());
         });
+    }
+
+    private void fillTable() {
+        highScoreTableModel.addScores(HighScoreManager.getInstance().getHighScores());
+    }
+
+    @Override
+    public void componentHidden( ComponentEvent e) {}
+
+    @Override
+    public void componentMoved( ComponentEvent e) {}
+
+    @Override
+    public void componentResized( ComponentEvent e) {}
+
+    @Override
+    public void componentShown( ComponentEvent e) {
+        fillTable();
     }
 
 }

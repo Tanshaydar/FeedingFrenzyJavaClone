@@ -50,6 +50,7 @@ public class PlayerFish extends GameObject {
         frenzy = 0;
         growth = 0;
         lives = 3;
+        width = height = 50;
         isDamaged = false;
     }
 

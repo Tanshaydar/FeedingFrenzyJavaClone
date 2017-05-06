@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
@@ -103,8 +102,6 @@ public class GamePanel extends JPanel implements ComponentListener {
         Graphics2D graphics2d = (Graphics2D) g;
         // Set font for something visible
         graphics2d.setFont(graphics2d.getFont().deriveFont(Font.BOLD, 20));
-        // Get font metrics
-        FontMetrics fontMetrics = graphics2d.getFontMetrics();
         // Set quality
         applyGraphicQuality(graphics2d);
         // Draw Background
@@ -128,8 +125,8 @@ public class GamePanel extends JPanel implements ComponentListener {
         } else {
             frenzyText = "Frenzy: " + playerFish.getFrenzy();
         }
-        graphics2d.drawString(frenzyText, (225 - fontMetrics.stringWidth(frenzyText)) / 2,
-                50 - fontMetrics.getHeight() / 2);
+        graphics2d.drawString(frenzyText, (225 - graphics2d.getFontMetrics().stringWidth(frenzyText)) / 2,
+                50 - graphics2d.getFontMetrics().getHeight() / 2);
 
         graphics2d.setColor(Color.BLUE);
         // Growth bar frame
@@ -139,20 +136,21 @@ public class GamePanel extends JPanel implements ComponentListener {
         // Growth text
         graphics2d.setColor(Color.WHITE);
         String sizeText = "Size: " + playerFish.getSize();
-        graphics2d.drawString(sizeText, RESOLUTION.width - (215 + fontMetrics.stringWidth(sizeText)) / 2,
-                50 - fontMetrics.getHeight() / 2);
+        graphics2d.drawString(sizeText,
+                RESOLUTION.width - (215 + graphics2d.getFontMetrics().stringWidth(sizeText)) / 2,
+                50 - graphics2d.getFontMetrics().getHeight() / 2);
 
         // Draw Lives
         graphics2d.setColor(Color.GREEN);
         String livesText = "Lives: " + playerFish.getLives();
-        graphics2d.drawString(livesText, (RESOLUTION.width - fontMetrics.stringWidth(livesText)) / 2,
-                50 - fontMetrics.getHeight() / 2);
+        graphics2d.drawString(livesText, (RESOLUTION.width - graphics2d.getFontMetrics().stringWidth(livesText)) / 2,
+                50 - graphics2d.getFontMetrics().getHeight() / 2);
 
         // Draw Time
         graphics2d.setColor(Color.BLACK);
         graphics2d.setFont(graphics2d.getFont().deriveFont(Font.BOLD, 10));
         String timeText = String.format("%02d : %02d", minutes, seconds);
-        graphics2d.drawString(timeText, (RESOLUTION.width - fontMetrics.stringWidth(timeText)) / 2, 50);
+        graphics2d.drawString(timeText, (RESOLUTION.width - graphics2d.getFontMetrics().stringWidth(timeText)) / 2, 50);
 
         graphics2d.setColor(Color.WHITE);
 

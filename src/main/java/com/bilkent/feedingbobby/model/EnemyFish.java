@@ -71,7 +71,7 @@ public class EnemyFish extends Fish {
 
     @Override
     public void updateState( GameManager gameManager, GameMapManager gameMapManager, PlayerFish playerFish) {
-        if (size < playerFish.getSize()) {
+        if (size < playerFish.getSize() || playerFish.getFrenzy() == 100) {
             playerFish.setGrowth(playerFish.getGrowth() + (size + 1) * 5);
             playerFish.setFrenzy(playerFish.getFrenzy() + (size + 1) * 2);
             playerFish.setScore(playerFish.getScore() + (size + 1) * 5);

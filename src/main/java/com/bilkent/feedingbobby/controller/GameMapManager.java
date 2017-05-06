@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.bilkent.feedingbobby.model.Bubble;
 import com.bilkent.feedingbobby.model.Direction;
 import com.bilkent.feedingbobby.model.EnemyFish;
 import com.bilkent.feedingbobby.model.GameObject;
@@ -45,16 +46,16 @@ public class GameMapManager {
 
     public List<GameObject> getInitialMapObjects() {
         List<GameObject> initialGameObjects = new ArrayList<>();
-        int spaceBetweenFish = GamePanel.RESOLUTION.height / initialNumberOfFish;
+        int spaceBetweenFish = GamePanel.RESOLUTION.height / (initialNumberOfFish + 1);
 
         for (int i = 0; i < initialNumberOfFish; i++) {
             boolean onLeft = i % 2 == 0;
             EnemyFish enemyFish = new EnemyFish(0);
             if (onLeft) {
-                enemyFish.setPositon(5, i * spaceBetweenFish + 10);
+                enemyFish.setPositon(-enemyFish.getWidth(), (i + 1) * spaceBetweenFish);
                 enemyFish.setDirection(Direction.RIGHT);
             } else {
-                enemyFish.setPositon(GamePanel.RESOLUTION.width - enemyFish.getWidth() - 5, i * spaceBetweenFish + 10);
+                enemyFish.setPositon(GamePanel.RESOLUTION.width + enemyFish.getWidth(), i * spaceBetweenFish + 10);
                 enemyFish.setDirection(Direction.LEFT);
             }
             initialGameObjects.add(enemyFish);
@@ -80,14 +81,31 @@ public class GameMapManager {
         }
 
         if (random.nextBoolean()) {
-            enemyFish.setPositon(5, random.nextInt(GamePanel.RESOLUTION.height) + 10);
+            enemyFish.setPositon(-enemyFish.getWidth(), random.nextInt(GamePanel.RESOLUTION.height) + 10);
             enemyFish.setDirection(Direction.RIGHT);
         } else {
-            enemyFish.setPositon(GamePanel.RESOLUTION.width - enemyFish.getWidth() - 5,
+            enemyFish.setPositon(GamePanel.RESOLUTION.width + enemyFish.getWidth(),
                     random.nextInt(GamePanel.RESOLUTION.height) + 10);
             enemyFish.setDirection(Direction.LEFT);
         }
-        
+
         return enemyFish;
+    }
+
+    public List<GameObject> addBubbles() {
+        List<GameObject> bubbles = new ArrayList<>();
+        Random random = new Random();
+        int bubbleSize = random.nextInt(7) + 7;
+        int y = GamePanel.RESOLUTION.height + bubbleSize;
+        int x = random.nextInt((GamePanel.RESOLUTION.width - bubbleSize * 2)) + bubbleSize / 2;
+        for (int i = 0; i < random.nextInt(4) + 2; i++) {
+            Bubble bubble = new Bubble();
+            bubble.setWidth(bubbleSize);
+            bubble.setHeight(bubbleSize);
+            bubble.setX(x);
+            bubble.setY(y + i * bubbleSize + 3);
+            bubbles.add(bubble);
+        }
+        return bubbles;
     }
 }
