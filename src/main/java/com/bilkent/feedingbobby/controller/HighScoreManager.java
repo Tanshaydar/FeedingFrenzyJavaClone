@@ -34,7 +34,7 @@ public class HighScoreManager {
         }
     }
 
-    public void readSCoresFromFile() {
+    public void readScoresFromFile() {
         if (new File(HIGH_SCORE_FILE_NAME).exists()) {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(HIGH_SCORE_FILE_NAME))) {
                 highScores.clear();
@@ -46,7 +46,7 @@ public class HighScoreManager {
     }
 
     public List<HighScore> getHighScores() {
-        readSCoresFromFile();
+        readScoresFromFile();
         return highScores;
     }
 

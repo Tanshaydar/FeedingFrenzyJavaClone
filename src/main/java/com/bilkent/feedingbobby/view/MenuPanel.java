@@ -20,7 +20,7 @@ public abstract class MenuPanel extends JPanel {
     protected JPanel parentPanel;
 
     public MenuPanel(CardLayout cardLayout, JPanel parentPanel) {
-//        setDoubleBuffered(true);
+        setDoubleBuffered(true);
         this.cardLayout = cardLayout;
         this.parentPanel = parentPanel;
         try {
@@ -41,20 +41,13 @@ public abstract class MenuPanel extends JPanel {
             }
             
             @Override
-            public void componentResized( ComponentEvent e) {
-                // TODO Auto-generated method stub
-                
-            }
+            public void componentResized( ComponentEvent e) {}
             
             @Override
-            public void componentMoved( ComponentEvent e) {
-                // TODO Auto-generated method stub
-                
-            }
+            public void componentMoved( ComponentEvent e) {}
             
             @Override
             public void componentHidden( ComponentEvent e) {
-                // TODO Auto-generated method stub
                 repaint();
             }
         });

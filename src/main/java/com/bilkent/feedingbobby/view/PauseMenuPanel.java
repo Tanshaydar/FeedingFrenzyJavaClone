@@ -119,7 +119,7 @@ public class PauseMenuPanel extends MenuPanel implements ComponentListener {
                 gameManager.resumeGame();
             } else if (resumeButton.getText().equals("Restart Game")) {
                 cardLayout.show(parentPanel, GamePanel.class.getName());
-                gameManager.startGame();
+                gameManager.startGame(true);
             }
         });
         exitGameButton.addActionListener(ae -> {

@@ -44,14 +44,19 @@ public class PlayerFish extends GameObject {
         });
     }
 
-    public void reset() {
-        score = 0;
+    public void resetForNewLevel() {
         size = 1;
         frenzy = 0;
         growth = 0;
         lives = 3;
         width = height = 50;
         isDamaged = false;
+        setCurrentlyActive(false);
+    }
+
+    public void reset() {
+        score = 0;
+        resetForNewLevel();
     }
 
     @Override

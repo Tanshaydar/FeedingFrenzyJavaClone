@@ -26,26 +26,30 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import com.bilkent.feedingbobby.controller.InputManager;
+import com.bilkent.feedingbobby.controller.SettingsManager;
 import com.bilkent.feedingbobby.model.GameObject;
 import com.bilkent.feedingbobby.model.PlayerFish;
 
-public class GamePanel extends JPanel implements ComponentListener {
+public class GamePanel extends MenuPanel implements ComponentListener {
+
+    /** The Constant RESOLUTION. */
     public static final Dimension RESOLUTION = new Dimension(800, 600);
 
+    /** The game objects. */
     private List<GameObject> gameObjects;
+
+    /** The player fish. */
     private PlayerFish playerFish;
 
+    /** The background image. */
     private Image backgroundImage;
 
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
-
+    private boolean isInLevelTransition = false;
     private int seconds;
     private int minutes;
 
-    public GamePanel(JPanel cardPanel, CardLayout cardLayout) {
-        this.cardPanel = cardPanel;
-        this.cardLayout = cardLayout;
+    public GamePanel(CardLayout cardLayout, JPanel cardPanel) {
+        super(cardLayout, cardPanel);
         setDoubleBuffered(true);
         setDoubleBuffered(true);
         setMinimumSize(RESOLUTION);
@@ -79,7 +83,7 @@ public class GamePanel extends JPanel implements ComponentListener {
 
     public void showGameOverScreen() {
         setFocusable(false);
-        cardLayout.show(cardPanel, PauseMenuPanel.class.getName());
+        cardLayout.show(parentPanel, PauseMenuPanel.class.getName());
     }
 
     @Override
@@ -152,6 +156,15 @@ public class GamePanel extends JPanel implements ComponentListener {
         String timeText = String.format("%02d : %02d", minutes, seconds);
         graphics2d.drawString(timeText, (RESOLUTION.width - graphics2d.getFontMetrics().stringWidth(timeText)) / 2, 50);
 
+        // Draw Level State
+        if (isInLevelTransition) {
+            graphics2d.setFont(graphics2d.getFont().deriveFont(Font.BOLD, 30));
+            String levelCompleteText = String.format("LEVEL COMPLETE!");
+            graphics2d.drawString(levelCompleteText,
+                    (RESOLUTION.width - graphics2d.getFontMetrics().stringWidth(levelCompleteText)) / 2,
+                    (RESOLUTION.height - graphics2d.getFontMetrics().getHeight()) / 2);
+        }
+
         graphics2d.setColor(Color.WHITE);
 
         // Draw Player
@@ -181,10 +194,8 @@ public class GamePanel extends JPanel implements ComponentListener {
 
         // Draw game objects
         for (GameObject gameObject : gameObjects) {
-
             graphics2d.drawImage(gameObject.getImage(), gameObject.getX(), gameObject.getY(), gameObject.getWidth(),
                     gameObject.getHeight(), null);
-
         }
 
         graphics2d.dispose();
@@ -254,16 +265,50 @@ public class GamePanel extends JPanel implements ComponentListener {
     }
 
     private void applyGraphicQuality( Graphics2D graphics2d) {
-        graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        graphics2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        graphics2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        graphics2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        graphics2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-        graphics2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        graphics2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-        graphics2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
-                RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+
+        switch (SettingsManager.getInstance().getSettings().getGraphicsQuality()) {
+
+        case HIGH:
+            graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            graphics2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            graphics2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+            graphics2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                    RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+            graphics2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+            graphics2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            graphics2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+            graphics2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+                    RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        case LOW:
+            graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+            graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+            graphics2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+            graphics2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_DEFAULT);
+            graphics2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                    RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+            graphics2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
+            graphics2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                    RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            graphics2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+            graphics2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+                    RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+        case NORMAL:
+            graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
+            graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+            graphics2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
+            graphics2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
+            graphics2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                    RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT);
+            graphics2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DEFAULT);
+            graphics2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            graphics2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_DEFAULT);
+            graphics2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+                    RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
+        default:
+            break;
+        }
     }
 
     public void setMinutes( long minutes) {
@@ -272,6 +317,10 @@ public class GamePanel extends JPanel implements ComponentListener {
 
     public void setSeconds( long seconds) {
         this.seconds = (int) seconds;
+    }
+
+    public void setInLevelTransition( boolean isInLevelTransition) {
+        this.isInLevelTransition = isInLevelTransition;
     }
 
 }

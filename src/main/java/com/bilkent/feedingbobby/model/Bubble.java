@@ -12,9 +12,7 @@ import com.bilkent.feedingbobby.view.GamePanel;
 public class Bubble extends GameObject{
     
     private Random random;
-    private double x;
-    private double y;
-    
+
     public Bubble() {
         try {
             image = ImageIO.read(getClass().getResource("/bubble.png"));
@@ -50,16 +48,6 @@ public class Bubble extends GameObject{
         if (x + width > GamePanel.RESOLUTION.width - 5) {
             x = GamePanel.RESOLUTION.width - width - 5;
         }
-    }
-    
-    @Override
-    public int getX() {
-        return (int) x;
-    }
-    
-    @Override
-    public int getY() {
-        return (int) y;
     }
 
     @Override

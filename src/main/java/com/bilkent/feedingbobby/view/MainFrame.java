@@ -37,7 +37,7 @@ public class MainFrame extends JFrame {
         cardLayout = (CardLayout) cardPanel.getLayout();
         contentPane.add(cardPanel);
 
-        gamePanel = new GamePanel(cardPanel, cardLayout);
+        gamePanel = new GamePanel(cardLayout, cardPanel);
         gamePanel.setFocusable(true);
         cardPanel.add(gamePanel, GamePanel.class.getName());
         gameManager = new GameManager(gamePanel);

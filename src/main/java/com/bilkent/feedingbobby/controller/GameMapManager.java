@@ -9,11 +9,12 @@ import com.bilkent.feedingbobby.model.Direction;
 import com.bilkent.feedingbobby.model.EnemyFish;
 import com.bilkent.feedingbobby.model.GameObject;
 import com.bilkent.feedingbobby.model.JellyFish;
+import com.bilkent.feedingbobby.model.PufferFish;
 import com.bilkent.feedingbobby.view.GamePanel;
 
 public class GameMapManager {
 
-    private int level = 1;
+    private int level = 0;
     private int initialNumberOfFish = 6;
 
     public GameMapManager() {
@@ -37,44 +38,72 @@ public class GameMapManager {
 
     public GameObject getSpecialFish() {
         Random random = new Random();
-        switch (random.nextInt(10)) {
+        switch (random.nextInt(3)) {
         case 0:
             return new JellyFish();
+        case 1:
+            return new PufferFish();
         }
         return null;
     }
 
-    public List<GameObject> getInitialMapObjects() {
-        List<GameObject> initialGameObjects = new ArrayList<>();
-        int spaceBetweenFish = GamePanel.RESOLUTION.height / (initialNumberOfFish + 1);
+    public List<GameObject> getMapObjects() {
+        level++;
 
-        for (int i = 0; i < initialNumberOfFish; i++) {
-            boolean onLeft = i % 2 == 0;
-            EnemyFish enemyFish = new EnemyFish(0);
-            if (onLeft) {
-                enemyFish.setPositon(-enemyFish.getWidth(), (i + 1) * spaceBetweenFish);
-                enemyFish.setDirection(Direction.RIGHT);
-            } else {
-                enemyFish.setPositon(GamePanel.RESOLUTION.width + enemyFish.getWidth(), i * spaceBetweenFish + 10);
-                enemyFish.setDirection(Direction.LEFT);
+        List<GameObject> initialGameObjects = new ArrayList<>();
+        int spaceBetweenFish;
+
+        switch (level) {
+        case 1:
+            spaceBetweenFish = GamePanel.RESOLUTION.height / (initialNumberOfFish + 1);
+
+            for (int i = 0; i < initialNumberOfFish; i++) {
+                boolean onLeft = i % 2 == 0;
+                EnemyFish enemyFish = new EnemyFish(0);
+                if (onLeft) {
+                    enemyFish.setPositon(-enemyFish.getWidth(), (i + 1) * spaceBetweenFish);
+                    enemyFish.setDirection(Direction.RIGHT);
+                } else {
+                    enemyFish.setPositon(GamePanel.RESOLUTION.width + enemyFish.getWidth(), i * spaceBetweenFish + 10);
+                    enemyFish.setDirection(Direction.LEFT);
+                }
+                initialGameObjects.add(enemyFish);
             }
-            initialGameObjects.add(enemyFish);
+            return initialGameObjects;
+        case 2:
+            spaceBetweenFish = GamePanel.RESOLUTION.height / (initialNumberOfFish + 3);
+
+            for (int i = 0; i < initialNumberOfFish; i++) {
+                boolean onLeft = i % 2 == 0;
+                EnemyFish enemyFish = new EnemyFish(0);
+                if (onLeft) {
+                    enemyFish.setPositon(-enemyFish.getWidth(), (i + 1) * spaceBetweenFish);
+                    enemyFish.setDirection(Direction.RIGHT);
+                } else {
+                    enemyFish.setPositon(GamePanel.RESOLUTION.width + enemyFish.getWidth(), i * spaceBetweenFish + 10);
+                    enemyFish.setDirection(Direction.LEFT);
+                }
+                initialGameObjects.add(enemyFish);
+            }
+            return initialGameObjects;
+        default:
+            return null;
         }
-        return initialGameObjects;
+
     }
 
     public GameObject getNewEnemyFish( List<GameObject> gameObjects, int size) {
         Random random = new Random();
 
-        boolean hasAnyEatable = false;
+        int eatableNumbers = 0;
         for (GameObject gameObject : gameObjects) {
             if (gameObject instanceof EnemyFish && ((EnemyFish) gameObject).getSize() < size) {
-                hasAnyEatable = true;
+                eatableNumbers++;
             }
         }
 
         EnemyFish enemyFish;
-        if (hasAnyEatable) {
+        if (eatableNumbers >= 2) {
             enemyFish = new EnemyFish(random.nextInt(size + 1));
         } else {
             enemyFish = new EnemyFish(random.nextInt(size));

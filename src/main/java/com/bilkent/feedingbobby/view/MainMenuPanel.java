@@ -106,7 +106,7 @@ public class MainMenuPanel extends MenuPanel {
     private void setActionListeners() {
         startNewGameButton.addActionListener(ae -> {
             cardLayout.show(parentPanel, GamePanel.class.getName());
-            gameManager.startGame();
+            gameManager.startGame(true);
         });
         highScoresButton.addActionListener(ae -> {
             cardLayout.show(parentPanel, HighScorePanel.class.getName());
