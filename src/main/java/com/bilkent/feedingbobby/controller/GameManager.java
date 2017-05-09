@@ -113,7 +113,7 @@ public class GameManager {
     public void startGame( boolean isNewGame) {
         if (isNewGame) {
             playerFish = new PlayerFish();
-            gameMapManager.setLevel(1);
+            gameMapManager.setLevel(0);
         }
         initialize();
         if (gameThread != null && gameThread.isAlive()) {
