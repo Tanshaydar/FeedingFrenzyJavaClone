@@ -86,6 +86,22 @@ public class GameMapManager {
                 initialGameObjects.add(enemyFish);
             }
             return initialGameObjects;
+        case 3:
+            spaceBetweenFish = GamePanel.RESOLUTION.height / (initialNumberOfFish + 5);
+
+            for (int i = 0; i < initialNumberOfFish; i++) {
+                boolean onLeft = i % 2 == 0;
+                EnemyFish enemyFish = new EnemyFish(0);
+                if (onLeft) {
+                    enemyFish.setPositon(-enemyFish.getWidth(), (i + 1) * spaceBetweenFish);
+                    enemyFish.setDirection(Direction.RIGHT);
+                } else {
+                    enemyFish.setPositon(GamePanel.RESOLUTION.width + enemyFish.getWidth(), i * spaceBetweenFish + 10);
+                    enemyFish.setDirection(Direction.LEFT);
+                }
+                initialGameObjects.add(enemyFish);
+            }
+            return initialGameObjects;
         default:
             return null;
         }
