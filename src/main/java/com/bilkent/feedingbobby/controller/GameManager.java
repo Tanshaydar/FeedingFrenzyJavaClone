@@ -238,11 +238,7 @@ public class GameManager {
             if (gameObject.isControlledByMouse()) {
                 gameObject.setDirection(InputManager.getInstance().getChangeDirection());
                 gameObject.setPosition(InputManager.getInstance().getMousePoint());
-            }
-        }
-
-        for (GameObject gameObject : gameObjects) {
-            if (gameObject.isControlledByAi()) {
+            } else if (gameObject.isControlledByAi()) {
                 gameObject.move();
             }
         }
@@ -266,7 +262,7 @@ public class GameManager {
 
         // Update game object states
         for (GameObject gameObject : gameObjects) {
-            if (gameObject != playerFish && gameObject.intersects(playerFish.getBoundingBox())) {
+            if (gameObject.intersects(playerFish.getBoundingBox())) {
                 gameObject.updateState(this, gameMapManager, playerFish);
             }
         }

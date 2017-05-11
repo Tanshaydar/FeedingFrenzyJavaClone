@@ -15,7 +15,7 @@ import com.bilkent.feedingbobby.view.GamePanel;
 public class GameMapManager {
 
     private int level = 0;
-    private int initialNumberOfFish = 6;
+    private int initialNumberOfFish = 4;
 
     public GameMapManager() {
     }
@@ -49,14 +49,13 @@ public class GameMapManager {
 
     public List<GameObject> getMapObjects() {
         level++;
+        initialNumberOfFish += 2;
 
         List<GameObject> initialGameObjects = new ArrayList<>();
-        int spaceBetweenFish;
+        int spaceBetweenFish = GamePanel.RESOLUTION.height / (initialNumberOfFish + 1);
 
         switch (level) {
         case 1:
-            spaceBetweenFish = GamePanel.RESOLUTION.height / (initialNumberOfFish + 1);
-
             for (int i = 0; i < initialNumberOfFish; i++) {
                 boolean onLeft = i % 2 == 0;
                 EnemyFish enemyFish = new EnemyFish(0);
@@ -71,8 +70,6 @@ public class GameMapManager {
             }
             return initialGameObjects;
         case 2:
-            spaceBetweenFish = GamePanel.RESOLUTION.height / (initialNumberOfFish + 3);
-
             for (int i = 0; i < initialNumberOfFish; i++) {
                 boolean onLeft = i % 2 == 0;
                 EnemyFish enemyFish = new EnemyFish(0);
@@ -87,8 +84,6 @@ public class GameMapManager {
             }
             return initialGameObjects;
         case 3:
-            spaceBetweenFish = GamePanel.RESOLUTION.height / (initialNumberOfFish + 5);
-
             for (int i = 0; i < initialNumberOfFish; i++) {
                 boolean onLeft = i % 2 == 0;
                 EnemyFish enemyFish = new EnemyFish(0);

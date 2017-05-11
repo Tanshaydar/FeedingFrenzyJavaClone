@@ -8,7 +8,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.JButton;
@@ -32,13 +31,11 @@ public class PauseMenuPanel extends MenuPanel implements ComponentListener {
 
     private GameManager gameManager;
     private GamePanel gamePanel;
-    private SimpleDateFormat simpleDateFormat;
 
     public PauseMenuPanel(CardLayout cardLayout, JPanel cardPanel, GameManager gameManager, GamePanel gamePanel) {
         super(cardLayout, cardPanel);
         this.gameManager = gameManager;
         this.gamePanel = gamePanel;
-        simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 0, 150, 0, 0 };
@@ -129,7 +126,7 @@ public class PauseMenuPanel extends MenuPanel implements ComponentListener {
         });
         saveHighScoreButton.addActionListener(ae -> {
             HighScore highScore = new HighScore(highsScoreNameTextField.getText(), gameManager.getScore(),
-                    simpleDateFormat.format(new Date(System.currentTimeMillis())));
+                    new Date(System.currentTimeMillis()));
             HighScoreManager.getInstance().writeScoreToFile(highScore);
             highScoreNameLabel.setText("Saved!");
             highsScoreNameTextField.setVisible(false);

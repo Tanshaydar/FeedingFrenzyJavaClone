@@ -51,7 +51,6 @@ public class GamePanel extends MenuPanel implements ComponentListener {
     public GamePanel(CardLayout cardLayout, JPanel cardPanel) {
         super(cardLayout, cardPanel);
         setDoubleBuffered(true);
-        setDoubleBuffered(true);
         setMinimumSize(RESOLUTION);
         setMaximumSize(RESOLUTION);
         setPreferredSize(RESOLUTION);
@@ -153,7 +152,7 @@ public class GamePanel extends MenuPanel implements ComponentListener {
         // Draw Time
         graphics2d.setColor(Color.BLACK);
         graphics2d.setFont(graphics2d.getFont().deriveFont(Font.BOLD, 10));
-        String timeText = String.format("%02d : %02d", minutes, seconds);
+        String timeText = String.format("%02d : %02d", minutes, seconds % 60);
         graphics2d.drawString(timeText, (RESOLUTION.width - graphics2d.getFontMetrics().stringWidth(timeText)) / 2, 50);
 
         // Draw Level State
@@ -280,6 +279,7 @@ public class GamePanel extends MenuPanel implements ComponentListener {
             graphics2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
             graphics2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
                     RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+            break;
         case LOW:
             graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
             graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
@@ -293,6 +293,7 @@ public class GamePanel extends MenuPanel implements ComponentListener {
             graphics2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
             graphics2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
                     RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+            break;
         case NORMAL:
             graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
             graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -306,6 +307,7 @@ public class GamePanel extends MenuPanel implements ComponentListener {
             graphics2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_DEFAULT);
             graphics2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
                     RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
+            break;
         default:
             break;
         }
