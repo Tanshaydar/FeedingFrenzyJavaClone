@@ -49,12 +49,12 @@ public class HighScoreTableModel extends AbstractTableModel {
 
         return value;
     }
-    
+
     @Override
     public Class<?> getColumnClass( int columnIndex) {
 
         Class<?> columnClass = null;
-        
+
         switch (columnIndex) {
         case 0:
             columnClass = String.class;
@@ -68,9 +68,9 @@ public class HighScoreTableModel extends AbstractTableModel {
         default:
             break;
         }
-        
+
         return columnClass;
-        
+
     }
 
     @Override

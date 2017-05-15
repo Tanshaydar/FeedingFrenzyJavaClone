@@ -7,7 +7,7 @@ public class Settings implements Serializable {
     private GraphicsQuality graphicsQuality;
     private boolean isAudioEnabled;
     private int audioLevel;
-    
+
     public Settings() {
         graphicsQuality = GraphicsQuality.HIGH;
         isAudioEnabled = true;

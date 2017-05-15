@@ -9,8 +9,8 @@ import com.bilkent.feedingbobby.controller.GameManager;
 import com.bilkent.feedingbobby.controller.GameMapManager;
 import com.bilkent.feedingbobby.view.GamePanel;
 
-public class Bubble extends GameObject{
-    
+public class Bubble extends GameObject {
+
     private Random random;
 
     public Bubble() {
@@ -19,7 +19,7 @@ public class Bubble extends GameObject{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         random = new Random();
         isControlledByAi = true;
     }
@@ -28,7 +28,7 @@ public class Bubble extends GameObject{
     public void move() {
         if (y + height < 0) {
             y = GamePanel.RESOLUTION.height + height;
-            x = random.nextInt((GamePanel.RESOLUTION.width - width * 2)) + width/2;
+            x = random.nextInt((GamePanel.RESOLUTION.width - width * 2)) + width / 2;
             return;
         }
 
@@ -51,6 +51,7 @@ public class Bubble extends GameObject{
     }
 
     @Override
-    public void updateState( GameManager gameManager, GameMapManager gameMapManager, PlayerFish playerFish) {}
+    public void updateState( GameManager gameManager, GameMapManager gameMapManager, PlayerFish playerFish) {
+    }
 
 }
