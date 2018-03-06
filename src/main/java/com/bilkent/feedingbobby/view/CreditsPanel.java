@@ -26,15 +26,7 @@ public class CreditsPanel extends MenuPanel {
         gridBagLayout.rowWeights = new double[] { 1.0, 0.0, Double.MIN_VALUE };
         setLayout(gridBagLayout);
         
-        textArea = new JTextArea("Bilkent University\n"
-                + "Department of Computer Engineering\n"
-                + "CS 319 - Object Oriented Software Engineering\n\n\n"
-                + "Feeding Bobby\n\n\n\n"
-                + "Group 1K:\n"
-                + "- Arda Kıray\n"
-                + "- Gülce Karaçal\n"
-                + "- Volkan Sevinç\n"
-                + "- Okan Şen\n");
+        textArea = new JTextArea("Tansel Altınel (Tanshaydar)");
         textArea.setFont(new Font("Tahoma", Font.BOLD, 12));
         textArea.setWrapStyleWord(true);
         textArea.setLineWrap(true);
